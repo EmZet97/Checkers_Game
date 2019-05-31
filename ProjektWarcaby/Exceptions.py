@@ -1,5 +1,5 @@
 class WrongMoveException(Exception):
-    print("Proba niewlasciwego ruchu")
+    pass
 
 class WrongTeamPickException(Exception):
-    print("Proba poruszenia niewlasciwego koloru")
+    pass

@@ -1,14 +1,16 @@
 import sys
 import pygame
-import Board
+from Background import Board
 import Player
 import main
-import Text
-from pygame import gfxdraw
+from UI import Text
+import Exceptions
+
+
 wp = 6
-plansza = None
-gracz1 = None
-gracz2 = None
+board = None
+player1 = None
+player2 = None
 
 text1 = None
 text2 = None
@@ -33,56 +35,74 @@ def mouse_pressed():
 def game_controller():
     t = main.turn
     if t % 2 == 0:
-        if gracz1.get_last_clicked() is not None:
-            pole = gracz1.get_clicked_field(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-            ruch = gracz1.get_last_clicked().check_move(pole[0], pole[1])
-            if ruch:
-                if ruch == 2:
-                    gracz1.points += 1
-                if gracz1.get_last_clicked().check_if_have_clash() and ruch == 2:
-                    gracz1.get_last_clicked().haveMC = True
+        if player1.get_last_clicked() is not None:
+            pole = player1.get_clicked_field(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            move = 0
+            try:
+                move = player1.get_last_clicked().check_move(pole[0], pole[1])
+            except Exceptions.WrongMoveException:
+                print("Player 1 incorrect move")
+                player1.get_last_clicked().back_last_color()
+
+            if move:
+                if move == 2:
+                    player1.points += 1
+                if player1.get_last_clicked().check_if_have_clash() and move == 2:
+                    player1.get_last_clicked().haveMC = True
                     main.haveMoreClashes = True
                 else:
                     t = t + 1
                     main.turn += 1
-                    gracz1.get_last_clicked().haveMC = False
-                    gracz1.get_last_clicked().back_last_color()
+                    player1.get_last_clicked().haveMC = False
+                    player1.get_last_clicked().back_last_color()
                     main.haveMoreClashes = False
                 return
             elif not main.haveMoreClashes:
-                gracz1.get_last_clicked().haveMC = False
-                gracz1.get_last_clicked().back_last_color()
+                player1.get_last_clicked().haveMC = False
+                player1.get_last_clicked().back_last_color()
                 main.haveMoreClashes = False
         if not main.haveMoreClashes:
-            p = gracz1.check_if_pawn_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 25)
-            if p != None:
+            try:
+                p = player1.check_if_pawn_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 25)
+            except Exceptions.WrongTeamPickException:
+                print("Niepoprawnie wybrany pionek")
+            else:
                 p.change_color((60, 60, 60))
 
     if t % 2 == 1:
-        if gracz2.get_last_clicked() != None:
-            pole = gracz2.get_clicked_field(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-            ruch = gracz2.get_last_clicked().check_move(pole[0], pole[1])
-            if ruch:
-                if ruch == 2:
-                    gracz2.points += 1
-                if gracz2.get_last_clicked().check_if_have_clash() and ruch == 2:
-                    gracz2.get_last_clicked().haveMC = True
+        if player2.get_last_clicked() != None:
+            pole = player2.get_clicked_field(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+            move = 0
+            try:
+                move = player2.get_last_clicked().check_move(pole[0], pole[1])
+            except Exceptions.WrongMoveException:
+                print("Player 2 incorrect move")
+                player2.get_last_clicked().back_last_color()
+            if move:
+                if move == 2:
+                    player2.points += 1
+                if player2.get_last_clicked().check_if_have_clash() and move == 2:
+                    player2.get_last_clicked().haveMC = True
                     main.haveMoreClashes = True
                 else:
                     t = t + 1
                     main.turn += 1
-                    gracz2.get_last_clicked().haveMC = False
-                    gracz2.get_last_clicked().back_last_color()
+                    player2.get_last_clicked().haveMC = False
+                    player2.get_last_clicked().back_last_color()
                     main.haveMoreClashes = False
                 return
             elif not main.haveMoreClashes:
-                gracz2.get_last_clicked().haveMC = False
-                gracz2.get_last_clicked().back_last_color()
+                player2.get_last_clicked().haveMC = False
+                player2.get_last_clicked().back_last_color()
                 main.haveMoreClashes = False
         if not main.haveMoreClashes:
-            p = gracz2.check_if_pawn_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 25)
-            if p != None:
+            try:
+                p = player2.check_if_pawn_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 25)
+            except Exceptions.WrongTeamPickException:
+                print("Niepoprawne klikniecie w plansze")
+            else:
                 p.change_color((60, 60, 60))
+
 
 def events():
     for event in pygame.event.get():
@@ -91,66 +111,70 @@ def events():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pressed()
 
+
 def init_game():
     print("Init Game")
     restartText.make_clickable(init_game)
     main.turn = 0
-    main.plansza = Board.Board(8, 200, 100, 50)
+    main.board = Board.Board(8, 200, 100, 50)
     pygame.display.set_caption("Warcaby")
-    logo = pygame.image.load("img/icon.png")
+    logo = pygame.image.load("UI/img/icon.png")
     pygame.display.set_icon(logo)
-    main.gracz1 = Player.Player(0, main.plansza)
-    main.gracz2 = Player.Player(1, main.plansza)
-    main.gracz1.set_enemy(main.gracz2)
-    main.gracz2.set_enemy(main.gracz1)
+    main.player1 = Player.Player(0, main.board)
+    main.player2 = Player.Player(1, main.board)
+    main.player1.set_enemy(main.player2)
+    main.player2.set_enemy(main.player1)
     main.text1 = Text.Text(100, 100)
     main.text2 = Text.Text(100, 450)
     main.playable = True
     main.haveMoreClashes = False
 
+
 def game_progress():
-    #print("Progress ", gracz2.points, " - ", gracz1.points)
-    if gracz2.points > wp or gracz1.points > wp:
+    #print("Progress ", player2.points, " - ", player1.points)
+    if player2.points > wp or player1.points > wp:
         #InitGame()
         main.playable = False
 
-def drawStats():
+
+def draw_stats():
     restartText.write(screen, "Restart")
     if main.turn % 2:
-        text1.write(screen, str(gracz1.points))
-        text2.write(screen, str(gracz2.points) + " <-")
+        text1.write(screen, str(player1.points))
+        text2.write(screen, str(player2.points) + " <-")
     else:
-        text1.write(screen, str(gracz1.points) + " <-")
-        text2.write(screen, str(gracz2.points))
+        text1.write(screen, str(player1.points) + " <-")
+        text2.write(screen, str(player2.points))
 
-def Update(screen):
+
+def update(screen):
     events()
     game_progress()
 
     pygame.display.flip()
     screen.fill((0, 0, 0))
     if playable:
-        plansza.draw(screen)
-        gracz1.draw_pawns(screen)
-        gracz2.draw_pawns(screen)
-        drawStats()
+        board.draw(screen)
+        player1.draw_pawns(screen)
+        player2.draw_pawns(screen)
+        draw_stats()
     else:
-        if main.gracz1.points > wp:
+        if main.player1.points > wp:
             endText.write(screen, "Zwyciezyl bialy")
         else:
             endText.write(screen, "Zwyciezyl czarny")
 
 
-def Start():
+def start():
     pygame.init()
     size = width, height = 800, 600
     main.screen = pygame.display.set_mode(size)
     init_game()
 
     while 1:
-        Update(screen)
+        update(screen)
         #pygame.transform.smoothscale(screen, (400, 300))
 
 
 
-Start()
+start()

@@ -11,6 +11,9 @@ class Text:
         self.clickable = False
         pygame.font.init()
         self.myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        self.clicked = lambda x, y: x >= self.x and x <= self.x + self.w and y >= self.y and y <= self.y + self.h
+
+
 
     def write(self, screen, text):
         textsurface = self.myfont.render(text, False, (255, 255, 255))
@@ -21,5 +24,5 @@ class Text:
         self.clickable = True
 
     def check_if_clicked(self, x, y):
-        if x >= self.x and x <= self.x + self.w and y >= self.y and y <= self.y + self.h:
+        if self.clicked(x, y):
             self.fun()
