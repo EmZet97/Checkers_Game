@@ -43,3 +43,33 @@ class Pawn:
             return -1
         return 1
 
+    def move(self, i, j):
+        raise NotImplementedError()
+
+    def draw(self, screen):
+        raise NotImplementedError()
+
+    def check_move(self, i, j):
+        raise NotImplementedError()
+
+    def show_ways(self, screen):
+        raise NotImplementedError()
+
+    def check_if_have_clash(self):
+        raise NotImplementedError()
+
+    def draw_way(self, screen, i, j):
+        raise NotImplementedError()
+
+    def check_area(self, i, j):
+        raise NotImplementedError()
+
+    def check_area_object(self, i, j):
+        raise NotImplementedError()
+
+    def check_if_enemy(self, i, j):
+        raise NotImplementedError()
+
+    def check_if_empty(self, i, j):
+        raise NotImplementedError()
+

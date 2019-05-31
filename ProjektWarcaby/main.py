@@ -4,18 +4,20 @@ from Background import Board
 import Player
 import main
 from UI import Text
+from UI import UI
 import Exceptions
 
 
-wp = 6
 board = None
 player1 = None
 player2 = None
 
 text1 = None
 text2 = None
-endText = Text.Text(300, 300)
-restartText = Text.Text(350, 550, 120, 50)
+end_text = Text.Text(300, 300)
+info_text = Text.Text(250, 50, 120, 40)
+turn_text = Text.Text(300, 10, 120, 60)
+restart_text = Text.Text(350, 550, 120, 50)
 
 screen = None
 playable = False
@@ -25,7 +27,7 @@ haveMoreClashes = False
 
 
 def mouse_pressed():
-    restartText.check_if_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+    restart_text.check_if_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
     if main.playable:
         game_controller()
     else:
@@ -42,7 +44,7 @@ def game_controller():
                 move = player1.get_last_clicked().check_move(pole[0], pole[1])
             except Exceptions.WrongMoveException:
                 print("Player 1 incorrect move")
-                player1.get_last_clicked().back_last_color()
+                #player1.get_last_clicked().back_last_color()
 
             if move:
                 if move == 2:
@@ -114,7 +116,7 @@ def events():
 
 def init_game():
     print("Init Game")
-    restartText.make_clickable(init_game)
+    restart_text.make_clickable(init_game)
     main.turn = 0
     main.board = Board.Board(8, 200, 100, 50)
     pygame.display.set_caption("Warcaby")
@@ -132,17 +134,20 @@ def init_game():
 
 def game_progress():
     #print("Progress ", player2.points, " - ", player1.points)
-    if player2.points > wp or player1.points > wp:
+    if player2.points >= Player.Player.win_points or player1.points >= Player.Player.win_points:
         #InitGame()
         main.playable = False
 
 
 def draw_stats():
-    restartText.write(screen, "Restart")
+    restart_text.write(screen, "Restart")
+    turn_text.write(screen, "Tura numer " + str(main.turn))
     if main.turn % 2:
+        info_text.write(screen, "Ruch czarnych pionkow")
         text1.write(screen, str(player1.points))
         text2.write(screen, str(player2.points) + " <-")
     else:
+        info_text.write(screen, "Ruch bialych pionkow")
         text1.write(screen, str(player1.points) + " <-")
         text2.write(screen, str(player2.points))
 
@@ -153,16 +158,18 @@ def update(screen):
 
     pygame.display.flip()
     screen.fill((0, 0, 0))
+
+
     if playable:
         board.draw(screen)
         player1.draw_pawns(screen)
         player2.draw_pawns(screen)
         draw_stats()
     else:
-        if main.player1.points > wp:
-            endText.write(screen, "Zwyciezyl bialy")
+        if main.player1.points >= Player.Player.win_points:
+            end_text.write(screen, "Zwyciezyl bialy")
         else:
-            endText.write(screen, "Zwyciezyl czarny")
+            end_text.write(screen, "Zwyciezyl czarny")
 
 
 def start():

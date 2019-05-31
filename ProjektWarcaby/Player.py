@@ -7,6 +7,7 @@ import Exceptions
 class Player:
     lastClicked = -1
     enemy = None
+    win_points = 2
 
     def __init__(self, team, board):
         self.points = 0
@@ -14,7 +15,7 @@ class Player:
         self.team = team
         self.board = board
         jpos = lambda i, j: j * 2 + 1 - i % 2
-        self.pawns = [Pawns.NormalPawn.NormalPawn(20, i, jpos(i, j), self.team, self.board, self) for j in range(4) for i in range(team*6, team*6+2)]
+        self.pawns = [Pawns.NormalPawn.NormalPawn(20, i, jpos(i, j), self.team, self.board, self) for j in range(4) for i in range(team*5, team*5+3)]
 
 
     def get_points(self):

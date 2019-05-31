@@ -30,8 +30,10 @@ class King(Pawn):
             self.show_ways(screen)
 
     def check_if_have_clash(self):
-        md = self.modifier(self.team)
-
+        if self.team == 0:
+            md = 1
+        else:
+            md = -1
         if (self.is_clicked and self.alive):
             # Check if can clash left
             if (self.check_if_enemy(self.i + md, self.j - 1)):
@@ -232,7 +234,6 @@ class King(Pawn):
 
     def show_ways(self, screen):
         md = self.modifier(self.team)
-
         if self.is_clicked and self.alive:
             hc = False
 
@@ -370,7 +371,7 @@ class King(Pawn):
             else:
                 #print("ENEMY!!!")
                 return 0
-        #else:
+        else:
             #print("None")
             return -1
 
@@ -394,10 +395,7 @@ class King(Pawn):
         return False
 
     def find_left_clash(self, i, j):
-        if self.team == 0:
-            md = 1
-        else:
-            md = -1
+        md = self.modifier(self.team)
         if self.check_if_enemy(i + md, j - 1):
             if self.check_if_empty(i + 2 * md, j - 2):
                 return True
@@ -405,10 +403,7 @@ class King(Pawn):
         return False
 
     def find_right_clash(self, i, j):
-        if self.team == 0:
-            md = 1
-        else:
-            md = -1
+        md = self.modifier(self.team)
         if self.check_if_enemy(i + md, j + 1):
             if self.check_if_empty(i + 2 * md, j + 2):
                 return True

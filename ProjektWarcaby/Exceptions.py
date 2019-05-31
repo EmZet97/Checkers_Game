@@ -3,3 +3,6 @@ class WrongMoveException(Exception):
 
 class WrongTeamPickException(Exception):
     pass
+
+class GameWin(Exception):
+    pass
