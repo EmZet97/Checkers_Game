@@ -3,11 +3,16 @@ import Pawns.NormalPawn
 from Pawns import Pawn
 import Exceptions
 
+def pawn_generator(self):
+    jpos = lambda i, j: j * 2 + 1 - i % 2
+    for i in range(self.team * 5, self.team * 5 + 3):
+        for j in range(4):
+            yield Pawns.NormalPawn.NormalPawn(20, i, jpos(i, j), self.team, self.board, self)
 
 class Player:
     lastClicked = -1
     enemy = None
-    win_points = 2
+    win_points = 12
 
     def __init__(self, team, board):
         self.points = 0
@@ -15,8 +20,8 @@ class Player:
         self.team = team
         self.board = board
         jpos = lambda i, j: j * 2 + 1 - i % 2
-        self.pawns = [Pawns.NormalPawn.NormalPawn(20, i, jpos(i, j), self.team, self.board, self) for j in range(4) for i in range(team*5, team*5+3)]
-
+        #self.pawns = [Pawns.NormalPawn.NormalPawn(20, i, jpos(i, j), self.team, self.board, self) for j in range(4) for i in range(team*5, team*5+3)]
+        self.pawns = list(pawn_generator(self))
 
     def get_points(self):
         return self.points
@@ -26,7 +31,7 @@ class Player:
 
     def draw_pawns(self, screen):
         for pawn in self.pawns:
-            if pawn != None:
+            if pawn is not None:
                 pawn.draw(screen)
 
     def check_if_pawn_clicked(self, x, y, field_size):

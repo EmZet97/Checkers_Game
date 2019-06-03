@@ -145,10 +145,10 @@ def draw_stats():
     if main.turn % 2:
         info_text.write(screen, "Ruch czarnych pionkow")
         text1.write(screen, str(player1.points))
-        text2.write(screen, str(player2.points) + " <-")
+        text2.write(screen, str(player2.points))# + " <-")
     else:
         info_text.write(screen, "Ruch bialych pionkow")
-        text1.write(screen, str(player1.points) + " <-")
+        text1.write(screen, str(player1.points))# + " <-")
         text2.write(screen, str(player2.points))
 
 
