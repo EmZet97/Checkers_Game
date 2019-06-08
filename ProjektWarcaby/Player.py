@@ -12,7 +12,7 @@ def pawn_generator(self):
 class Player:
     lastClicked = -1
     enemy = None
-    win_points = 12
+    win_points = 2
 
     def __init__(self, team, board):
         self.points = 0

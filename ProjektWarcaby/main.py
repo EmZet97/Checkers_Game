@@ -72,14 +72,15 @@ def game_controller():
                 p.change_color((60, 60, 60))
 
     if t % 2 == 1:
-        if player2.get_last_clicked() != None:
+        if player2.get_last_clicked() is not None:
             pole = player2.get_clicked_field(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
             move = 0
             try:
                 move = player2.get_last_clicked().check_move(pole[0], pole[1])
             except Exceptions.WrongMoveException:
                 print("Player 2 incorrect move")
-                player2.get_last_clicked().back_last_color()
+                # player1.get_last_clicked().back_last_color()
+
             if move:
                 if move == 2:
                     player2.points += 1
@@ -101,7 +102,7 @@ def game_controller():
             try:
                 p = player2.check_if_pawn_clicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 25)
             except Exceptions.WrongTeamPickException:
-                print("Niepoprawne klikniecie w plansze")
+                print("Niepoprawnie wybrany pionek")
             else:
                 p.change_color((60, 60, 60))
 
